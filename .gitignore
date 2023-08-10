@@ -1,0 +1,8 @@
+.vscode
+.venv
+logs
+vendor/
+*.tar.gz
+channel-artifacts/ 
+organizations/
+system-genesis-block/

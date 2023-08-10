@@ -1,0 +1,12 @@
+10.2.2.11 orderer1.remote.com
+10.2.2.12 orderer2.remote.com
+10.2.2.13 orderer3.remote.com
+10.2.2.14 orderer4.remote.com
+10.2.2.15 orderer5.remote.com
+10.2.2.16 orderer6.remote.com
+10.2.2.11 peer0.org1.remote.com
+10.2.2.12 peer0.org2.remote.com
+10.2.2.13 peer0.org3.remote.com
+10.2.2.14 peer0.org4.remote.com
+10.2.2.15 peer0.org5.remote.com
+10.2.2.16 peer0.org6.remote.com
