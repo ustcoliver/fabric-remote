@@ -4,7 +4,6 @@
 . scripts/utils.sh
 . scripts/env.sh
 
-
 function prepare() {
   println "executing with the following"
   println "- CHANNEL_NAME: ${C_GREEN}${CHANNEL_NAME}${C_RESET}"
@@ -160,7 +159,6 @@ chaincodeInvokeInit() {
   infoln "\n Init the  Chaincode \n"
   verifyResult $res "Invoke transaction failed on channel '$CHANNEL_NAME' due to uneven number of peer and org parameters "
 
-  
   fcn_call='{"function":"'${CC_INIT_FCN}'","Args":[]}'
   infoln "invoke fcn call:${fcn_call}"
   set -x
@@ -219,65 +217,63 @@ chaincodeInvoke() {
 }
 
 function install() {
-    # 安装链码
-    installChaincode
+  # 安装链码
+  installChaincode
 
-    # 查询安装
-    queryInstalled
+  # 查询安装
+  queryInstalled
 
-    # 同意安装
-    approveForMyOrg
+  # 同意安装
+  approveForMyOrg
 
-    checkCommitReadiness
+  checkCommitReadiness
 }
 
 command=$1
 shift
 
-if [ "${command}" == "" ]; then 
-    echo "help"
+if [ "${command}" == "" ]; then
+  echo "help"
 elif [ "$command" == "package" ]; then
-    CC_NAME=$1
-    CC_SRC_PATH=$2
-    packageChaincode
+  CC_NAME=$1
+  CC_SRC_PATH=$2
+  packageChaincode
 elif [ "$command" == "install" ]; then
-    CC_NAME=$1
-    CHANNEL_NAME=$2
-    ORG=$3
-    installChaincode
-    queryInstalled
-    approveForMyOrg
-    checkCommitReadiness
+  CC_NAME=$1
+  CHANNEL_NAME=$2
+  ORG=$3
+  installChaincode
+  queryInstalled
+  approveForMyOrg
+  checkCommitReadiness
 elif [ "$command" == "commit" ]; then
-    CC_NAME=$1
-    CHANNEL_NAME=$2
-    shift 2
-    ORG=$*
-    commitChaincodeDefinition $ORG
-elif [ "$command" == "query-commit" ]; then 
-    CC_NAME=$1
-    CHANNEL_NAME=$2
-    ORG=$3
-    queryCommitted 
-elif [ "$command" == "init" ]; then 
-    CC_NAME=$1
-    CHANNEL_NAME=$2
-    shift 2
-    ORG=$*
-    chaincodeInvokeInit $ORG
-elif [ "$command" == "query" ]; then 
-    CC_NAME=$1
-    CHANNEL_NAME=$2
-    ORG=$3
-    chaincodeQuery $4
-elif [ "$command" == "invoke" ]; then 
-    CC_NAME=$1
-    CHANNEL_NAME=$2
-    ORG=$3
-    INVOKE_ARG=$@
-    chaincodeInvoke $ORG
+  CC_NAME=$1
+  CHANNEL_NAME=$2
+  shift 2
+  ORG=$*
+  commitChaincodeDefinition $ORG
+elif [ "$command" == "query-commit" ]; then
+  CC_NAME=$1
+  CHANNEL_NAME=$2
+  ORG=$3
+  queryCommitted
+elif [ "$command" == "init" ]; then
+  CC_NAME=$1
+  CHANNEL_NAME=$2
+  shift 2
+  ORG=$*
+  chaincodeInvokeInit $ORG
+elif [ "$command" == "query" ]; then
+  CC_NAME=$1
+  CHANNEL_NAME=$2
+  ORG=$3
+  chaincodeQuery $4
+elif [ "$command" == "invoke" ]; then
+  CC_NAME=$1
+  CHANNEL_NAME=$2
+  ORG=$3
+  INVOKE_ARG=$@
+  chaincodeInvoke $ORG
 else
-    errorln "wrong input !!"
+  errorln "wrong input !!"
 fi
-
-

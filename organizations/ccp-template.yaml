@@ -1,0 +1,35 @@
+---
+name: ${PROJECT_NAME}-${ORG_NAME}
+version: 1.0.0
+client:
+  organization: ${ORG_NAME}
+  connection:
+    timeout:
+      peer:
+        endorser: '300'
+organizations:
+  ${ORG_NAME}:
+    mspid: ${ORG_MSP}
+    peers:
+    - ${PEER0_ADDR}
+    certificateAuthorities:
+    - ${CA_ADDR}
+peers:
+  ${PEER0_ADDR}:
+    url: grpcs://localhost:${PEER0_PORT}
+    tlsCACerts:
+      pem: |
+          ${PEER_PEM}
+    grpcOptions:
+      ssl-target-name-override: ${PEER0_ADDR}
+      hostnameOverride: ${PEER0_ADDR}
+certificateAuthorities:
+  ca.org${ORG}.example.com:
+    url: https://localhost:${CA_PORT}
+    caName: ${CA_NAME}
+    tlsCACerts:
+      pem: 
+        - |
+          ${CA_PEM}
+    httpOptions:
+      verify: false

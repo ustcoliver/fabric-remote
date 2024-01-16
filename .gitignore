@@ -4,5 +4,9 @@ logs
 vendor/
 *.tar.gz
 channel-artifacts/ 
-organizations/
 system-genesis-block/
+envs/
+test/
+test.py
+__pycache__/
+*.pyc

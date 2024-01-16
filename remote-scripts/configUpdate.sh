@@ -10,13 +10,13 @@
 
 # fetchChannelConfig <org> <channel_id> <output_json>
 # Writes the current channel config for a given channel to a JSON file
-# NOTE: this must be run in a CLI container since it requires configtxlator 
+# NOTE: this must be run in a CLI container since it requires configtxlator
 fetchChannelConfig() {
-#   ORG=$1
-#   CHANNEL=$2
+  #   ORG=$1
+  #   CHANNEL=$2
   OUTPUT=$1
 
-#   setGlobals $ORG
+  #   setGlobals $ORG
 
   infoln "Fetching the most recent configuration block for the channel"
   set -x
@@ -32,7 +32,7 @@ fetchChannelConfig() {
 # createConfigUpdate <channel_id> <original_config.json> <modified_config.json> <output.pb>
 # Takes an original and modified config, and produces the config update tx
 # which transitions between the two
-# NOTE: this must be run in a CLI container since it requires configtxlator 
+# NOTE: this must be run in a CLI container since it requires configtxlator
 createConfigUpdate() {
   CHANNEL=$1
   ORIGINAL=$2
@@ -54,7 +54,7 @@ createConfigUpdate() {
 signConfigtxAsPeerOrg() {
   ORG=$1
   CONFIGTXFILE=$2
-#   setGlobals $ORG
+  #   setGlobals $ORG
   set -x
   peer channel signconfigtx -f "${CONFIGTXFILE}"
   { set +x; } 2>/dev/null

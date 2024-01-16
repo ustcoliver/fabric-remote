@@ -1,6 +1,6 @@
 # vm1 docker-compose 文件，共三个容器，orderer,peer和cli
 
-version: '2.1'
+version: "2.1"
 
 volumes:
   orderer1.remote.com:
@@ -9,9 +9,8 @@ volumes:
 networks:
   fabric_remote:
     name: fabric_remote
-  
-services:
 
+services:
   orderer1.remote.com:
     container_name: orderer1.remote.com
     image: hyperledger/fabric-orderer:latest
@@ -37,10 +36,10 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: orderer
     volumes:
-        - ./system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-        - ./organizations/ordererOrganizations/remote.com/orderers/orderer1.remote.com/msp:/var/hyperledger/orderer/msp
-        - ./organizations/ordererOrganizations/remote.com/orderers/orderer1.remote.com/tls/:/var/hyperledger/orderer/tls
-        - orderer1.remote.com:/var/hyperledger/production/orderer
+      - ./system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./organizations/ordererOrganizations/remote.com/orderers/orderer1.remote.com/msp:/var/hyperledger/orderer/msp
+      - ./organizations/ordererOrganizations/remote.com/orderers/orderer1.remote.com/tls/:/var/hyperledger/orderer/tls
+      - orderer1.remote.com:/var/hyperledger/production/orderer
     ports:
       - 7050:7050
       - 9443:9443
@@ -59,7 +58,6 @@ services:
       - "peer0.org6.remote.com:10.2.2.16"
     networks:
       - fabric_remote
-
 
   peer0.org1.remote.com:
     container_name: peer0.org1.remote.com
@@ -86,22 +84,41 @@ services:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.remote.com:9444
     volumes:
-        - /var/run/docker.sock:/host/var/run/docker.sock
-        - ./organizations/peerOrganizations/org1.remote.com/peers/peer0.org1.remote.com/msp:/etc/hyperledger/fabric/msp
-        - ./organizations/peerOrganizations/org1.remote.com/peers/peer0.org1.remote.com/tls:/etc/hyperledger/fabric/tls
-        - peer0.org1.remote.com:/var/hyperledger/production
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ./organizations/peerOrganizations/org1.remote.com/peers/peer0.org1.remote.com/msp:/etc/hyperledger/fabric/msp
+      - ./organizations/peerOrganizations/org1.remote.com/peers/peer0.org1.remote.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org1.remote.com:/var/hyperledger/production
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     ports:
       - 7051:7051
+      - 7052:7052
       - 9444:9444
     # 此处需要添加其他docker容器所在ip
     extra_hosts: *extra_hosts_common
     networks:
       - fabric_remote
 
-# 此处相比test-net.yaml变化较大
-# 由于此cli只为orderer1 与peer0.org1工作，因此预先导入后续会用到的一些环境变量
+  ca.org1.remote.com:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.org1.remote.com
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_PORT=7054
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:17054
+    ports:
+      - "7054:7054"
+      - "17054:17054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./organizations/fabric-ca/org1:/etc/hyperledger/fabric-ca-server
+    container_name: ca.org1.remote.com
+    networks:
+      - fabric_remote
+
+  # 此处相比test-net.yaml变化较大
+  # 由于此cli只为orderer1 与peer0.org1工作，因此预先导入后续会用到的一些环境变量
   cli:
     container_name: cli.remote.com
     image: hyperledger/fabric-tools:latest
@@ -126,16 +143,16 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
     volumes:
-        - /var/run/:/host/var/run/
-        # 导入通道信息
-        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
-        # 导入证书
-        - ./organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
-        # 导入脚本
-        - ./remote-scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/remote-scripts
-        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts
-        # 导入链码
-        - ./chaincode:/opt/gopath/src/github.com/hyperledger/fabric/chaincode
+      - /var/run/:/host/var/run/
+      # 导入通道信息
+      - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+      # 导入证书
+      - ./organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+      # 导入脚本
+      - ./remote-scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/remote-scripts
+      - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts
+      # 导入链码
+      - ./chaincode:/opt/gopath/src/github.com/hyperledger/fabric/chaincode
     extra_hosts: *extra_hosts_common
     depends_on:
       - peer0.org1.remote.com

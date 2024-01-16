@@ -35,22 +35,22 @@ function println() {
 
 # errorln echos i red color
 function errorln() {
-  println "${C_RED}${1}${C_RESET}"
+  println "${C_RED}[remote-shell] ${1}${C_RESET}"
 }
 
 # successln echos in green color
 function successln() {
-  println "${C_GREEN}${1}${C_RESET}"
+  println "${C_GREEN}[remote-shell] ${1}${C_RESET}"
 }
 
 # infoln echos in blue color
 function infoln() {
-  println "${C_BLUE}${1}${C_RESET}"
+  println "${C_BLUE}[remote-shell] ${1}${C_RESET}"
 }
 
 # warnln echos in yellow color
 function warnln() {
-  println "${C_YELLOW}${1}${C_RESET}"
+  println "${C_YELLOW}[remote-shell] ${1}${C_RESET}"
 }
 
 # fatalln echos in red color and exits with fail status
@@ -65,35 +65,34 @@ verifyResult() {
   fi
 }
 
-
 # 使用find判断文件是否存在，可以使用通配符删除文件
 function removeFiles() {
-    IP=$(hostname -I | awk '{print $1}')
-    infoln "remove files on ${IP} ..."
-    FILE=$@
-    for file in $FILE; do
-        res=$(find $file 2>/dev/null)
-        if [ "$res" != "" ]; then 
-            infoln "remove $file ... "
-            rm -rf $file
-        else
-            infoln "$file not exist, skip ..."
-        fi
-    done
+  FILE=$@
+  for file in $FILE; do
+    res=$(find $file 2>/dev/null)
+    if [ "$res" != "" ]; then
+      infoln "remove $file."
+      sudo rm -rf $file
+    else
+      infoln "$file not exist, skip ..."
+    fi
+  done
 }
 
+# 关闭相关容器，流程：
+# 1. 判断由此文件夹下docker-compose文件定义的容器是否存在
+# 2. 如果存在则基于docker-compose文件将其删除，如果没有则跳过
 function removeContainer() {
-    domain=$1
-    containers=$(docker ps -a | grep $domain)
-    IP=$(hostname -I | awk '{print $1}')
-    if [ "$containers" != "" ]; then 
-        infoln "remove all containers on ${IP} ..."
-        set -x
-        docker-compose -f docker-compose-up.yaml down --volumes 
-        set +x
-    else
-        infoln "no containers on ${IP}, skip ..."
-    fi
+  containers=$(docker-compose ps -aq)
+  IP=$(hostname -I | awk '{print $1}')
+  if [ "$containers" != "" ]; then
+    infoln "remove all containers on ${IP} ..."
+    set -x
+    docker-compose down --volumes
+    set +x
+  else
+    infoln "no containers on ${IP}, skip ..."
+  fi
 
 }
 

@@ -1,34 +1,15 @@
 #!/bin/bash
 
-
 . scripts/utils.sh
 
 #项目配置
 # 项目名
-PROJECT_NAME="BigDataExchange"
+PROJECT_NAME="fabric-remote"
 # 通道设置
 CHANNEL_PROFILE="ChannelOne"
 # 通道名
 CHANNEL_NAME="channelone"
 
-# 节点数量
-# 使用eval进行变量名拼接
-# 只需HOSTS的值与相应变量的数量统一，即可通过循环执行操作
-HOSTS=6
-# 节点ip
-HOST1="10.2.2.11"
-HOST2="10.2.2.12"
-HOST3="10.2.2.13"
-HOST4="10.2.2.14"
-HOST5="10.2.2.15"
-HOST6="10.2.2.16"
-# 节点ssh host
-SSH_HOST1="f1"
-SSH_HOST2="f2"
-SSH_HOST3="f3"
-SSH_HOST4="f4"
-SSH_HOST5="f5"
-SSH_HOST6="f6"
 # 组织名
 ORG1="Org1"
 ORG2="Org2"
@@ -58,8 +39,6 @@ CC_END_POLICY="NA"
 CC_COLL_CONFIG="NA"
 VERBOSE="false"
 CC_QUERY="GetAllDataSet"
-
-
 
 export PEER0_ORG1_CA=${PWD}/organizations/peerOrganizations/org1.remote.com/peers/peer0.org1.remote.com/tls/ca.crt
 export PEER0_ORG2_CA=${PWD}/organizations/peerOrganizations/org2.remote.com/peers/peer0.org2.remote.com/tls/ca.crt
@@ -98,7 +77,7 @@ setGlobals() {
   fi
 }
 
-# Set environment variables for use in the CLI container 
+# Set environment variables for use in the CLI container
 setGlobalsCLI() {
   setGlobals $1
 
@@ -124,7 +103,6 @@ setGlobalsCLI() {
     errorln "ORG Unknown"
   fi
 }
-
 
 parsePeerConnectionParameters() {
   PEER_CONN_PARMS=""
